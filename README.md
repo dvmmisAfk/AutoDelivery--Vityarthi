@@ -85,7 +85,7 @@ One-time setup:
 ```bash
 mkdir -p maps
 cp *.map maps/
-[ -e results ] && [ ! -d results ] && rm -f results
+[ -e results ] && [ ! -d results ] && mv results results.backup
 mkdir -p results
 ```
 
