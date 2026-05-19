@@ -1,9 +1,11 @@
 # AutoDelivery - Vityarthi
 
+CSA2001 autonomous delivery agent project submission.
+
 Autonomous delivery path-planning simulation on a 2D grid using:
 - **BFS**
 - **UCS (Dijkstra)**
-- **A\***
+- **`A*`**
 - **Local-search replanning** for dynamic obstacles
 
 ## What the project does
