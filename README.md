@@ -74,7 +74,7 @@ python autodelivery.py --map dynamic.map --planner astar --dynamic-demo --unpred
 
 ### 3) Run experiments on all maps
 
-`--run-experiments` currently uses hardcoded paths under `maps/`, while the repository stores `.map` files in the root.
+Known limitation: `--run-experiments` currently uses hardcoded paths under `maps/`, while this repository stores `.map` files in the root.
 
 So before running experiments, set up:
 - map files inside `maps/`
@@ -85,7 +85,7 @@ One-time setup:
 ```bash
 mkdir -p maps
 cp *.map maps/
-[ -f results ] && rm results
+[ -e results ] && [ ! -d results ] && rm -f results
 mkdir -p results
 ```
 
