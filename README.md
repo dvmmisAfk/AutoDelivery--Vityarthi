@@ -1,4 +1,4 @@
-# AutoDelivery--Vityarthi
+# AutoDelivery - Vityarthi
 
 Autonomous delivery path-planning simulation on a 2D grid using:
 - **BFS**
@@ -28,6 +28,7 @@ It supports:
 ├── medium.map
 ├── large.map
 ├── dynamic.map
+├── maps/                     (optional helper folder for --run-experiments)
 ├── results/
 │   └── experiment_results.csv   (generated after experiments)
 └── README.md
@@ -71,7 +72,9 @@ python autodelivery.py --map dynamic.map --planner astar --dynamic-demo --unpred
 
 ### 3) Run experiments on all maps
 
-`--run-experiments` expects:
+`--run-experiments` currently uses hardcoded paths under `maps/`, while the repository stores `.map` files in the root.
+
+So before running experiments, set up:
 - map files inside `maps/`
 - `results/` to be a directory
 
@@ -80,7 +83,7 @@ One-time setup:
 ```bash
 mkdir -p maps
 cp *.map maps/
-rm -f results
+rm -rf results
 mkdir -p results
 ```
 
