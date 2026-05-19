@@ -1,4 +1,4 @@
-# AutoDelivery - Vityarthi
+# AutoDelivery - CSA2001 Project 1
 
 CSA2001 autonomous delivery agent project submission.
 
@@ -85,7 +85,7 @@ One-time setup:
 ```bash
 mkdir -p maps
 cp *.map maps/
-rm -rf results
+[ -f results ] && rm results
 mkdir -p results
 ```
 
