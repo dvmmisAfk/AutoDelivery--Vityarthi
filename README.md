@@ -1,145 +1,118 @@
-# Autonomous Delivery Agent – CSA2001 Project 1
+# AutoDelivery--Vityarthi
 
-This project implements an **autonomous delivery agent** navigating a 2D grid city with static obstacles, terrain costs, and dynamic moving obstacles.  
-It demonstrates **uninformed search (BFS, UCS)**, **informed search (A*)**, and a **local-search replanner** for dynamic environments.
+Autonomous delivery path-planning simulation on a 2D grid using:
+- **BFS**
+- **UCS (Dijkstra)**
+- **A\***
+- **Local-search replanning** for dynamic obstacles
 
----
+## What the project does
 
-## Features
-- Grid world environment:
-  - `#` = impassable obstacle  
-  - `.` = normal terrain (cost 1)  
-  - `1-9` = explicit terrain movement cost  
-  - `S` = start  
-  - `G` = goal  
-  - `M` = moving obstacle (with deterministic schedule)  
-- **Search algorithms**:
-  - BFS (Breadth-First Search)
-  - UCS (Uniform-Cost Search / Dijkstra)
-  - A* Search with admissible heuristic (`h = Manhattan × min_cost`)
-- **Dynamic replanning**:
-  - Moving obstacles with deterministic schedules
-  - Unpredictable obstacles (stochastic presence)
-  - Local search–based replanner (simulated annealing style)
-- **Metrics** collected:
-  - Path cost
-  - Nodes expanded
-  - Runtime (seconds)
-- CLI interface for running single planners, dynamic demos, or full experiments
-- CSV experiment output for easy plotting/analysis
+The agent moves from **S (start)** to **G (goal)** on map files with:
+- `#` → blocked cell
+- `.` / `0` → normal terrain (cost `1`)
+- `1-9` → movement cost
+- `M` → moving obstacle seed (used to build a deterministic obstacle schedule)
 
----
+It supports:
+- single-run planning
+- dynamic demo with replanning
+- experiment mode that saves metrics (`time`, `nodes_expanded`, `path_cost`) to CSV
 
-## Project Structure
+## Repository structure
+
+```text
+.
+├── autodelivery.py
+├── small.map
+├── medium.map
+├── large.map
+├── dynamic.map
+├── results/
+│   └── experiment_results.csv   (generated after experiments)
+└── README.md
 ```
-autodelivery/
-  maps/
-    small.map
-    medium.map
-    large.map
-    dynamic.map
-  results/
-    experiment_results.csv   # generated after experiments
-  autodelivery.py            # main Python script
-  README.md                  # this file
-```
-
----
 
 ## Requirements
+
 - Python **3.8+**
-- No external dependencies for core algorithms
-- Optional: `matplotlib`, `pandas` (for analysis/plots)
+- No required third-party packages for core execution
 
-Install optional libraries:
+## How to run
+
+Run commands from the project root.
+
+### 1) Run one planner on one map
+
 ```bash
-pip install matplotlib pandas
+python autodelivery.py --map small.map --planner astar
 ```
 
----
+Available planners:
+- `bfs`
+- `ucs`
+- `astar`
 
-## Usage
-
-### 1. Run a planner on a map
+Example:
 ```bash
-python autodelivery.py --map maps/small.map --planner astar
-```
-Example output:
-```
-Loaded map maps/small.map size 5x5 start=Node(r=0,c=0) goal=Node(r=0,c=4)
-Found path cost=7, nodes_expanded=14, time=0.0003s
-Path: (0,0) -> (0,1) -> (0,2) -> (0,3) -> (0,4)
+python autodelivery.py --map medium.map --planner ucs
 ```
 
-### 2. Dynamic demo with replanning
+### 2) Run dynamic demo (replanning)
+
 ```bash
-python autodelivery.py --map maps/dynamic.map --planner astar --dynamic-demo
-```
-Logs will show:
-```
-[t=0] Move to (0,0)
-[t=1] Move to (0,1)
-[t=2] Obstacle at (1,2) blocks path. Replanning...
-[t=2] Replanning success. New path length 9.
-...
-[t=9] Goal reached.
+python autodelivery.py --map dynamic.map --planner astar --dynamic-demo
 ```
 
-### 3. Run full experiments (saves results to CSV)
+Optional unpredictable obstacle behavior:
+```bash
+python autodelivery.py --map dynamic.map --planner astar --dynamic-demo --unpredictable
+```
+
+### 3) Run experiments on all maps
+
+`--run-experiments` expects:
+- map files inside `maps/`
+- `results/` to be a directory
+
+One-time setup:
+
+```bash
+mkdir -p maps
+cp *.map maps/
+rm -f results
+mkdir -p results
+```
+
+Then run:
+
 ```bash
 python autodelivery.py --run-experiments
 ```
-This will run BFS, UCS, and A* on `small.map`, `medium.map`, `large.map`, and `dynamic.map`.  
-Results are saved to:
-```
+
+This runs BFS/UCS/A* on:
+- `small.map`
+- `medium.map`
+- `large.map`
+- `dynamic.map`
+
+Output CSV:
+```text
 results/experiment_results.csv
 ```
 
----
+## CLI options
 
-## Maps
-
-### Example `small.map`
-```
-S . . . G
-. # # . .
-. . 3 . .
-. # . . .
-. . . . .
+```text
+--map <file>             map file path (default: small.map)
+--planner <bfs|ucs|astar>
+--dynamic-demo
+--run-experiments
+--unpredictable
 ```
 
-### Example `dynamic.map`
-```
-S . . . . . . G
-. . M . . . . .
-. . . . . . . .
-. . . . . . . .
-. . . . . . . .
-```
-- `M` moves rightward then leftward in a repeating cycle.
+## Notes
 
----
-
-## Report Guidance
-Include in your short report:
-1. **Environment model**: grid, costs, obstacles, moving obstacle schedules.  
-2. **Agent design**: BFS, UCS, A*, heuristic, local replanner.  
-3. **Experimental results**:  
-   - Use `results/experiment_results.csv` to make tables/plots.  
-   - Compare path cost, nodes expanded, runtime.  
-4. **Dynamic demo proof**: screenshots or logs from `--dynamic-demo`.  
-5. **Analysis**: trade-offs between BFS, UCS, A*, and replanning.  
-
----
-
-## Future Improvements
-- Add 8-connected movement (diagonal steps).  
-- Richer map format (`@SCHEDULE` for explicit moving obstacle paths).  
-- Graphical visualization (matplotlib animation).  
-- Modularize into packages for cleaner structure.  
-
----
-
-## License
-This project is for **academic use** (CSA2001 course).  
-Feel free to adapt/extend for your own experiments.
+- Movement is 4-directional (up/down/left/right).
+- A* heuristic uses Manhattan distance × minimum terrain cost.
+- The moving obstacle schedule is currently generated programmatically from `M` markers.
